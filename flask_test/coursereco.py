@@ -4,6 +4,8 @@ from sklearn.metrics.pairwise import sigmoid_kernel
 import difflib
 from flask import Flask,request, url_for, redirect, render_template, jsonify
 from flask import Markup
+from fuzzywuzzy import process
+
 
 def create_sim(search):
     df_org=pd.read_csv('Coursera.csv')
@@ -44,7 +46,9 @@ def create_sim(search):
 
     namelist=df['Course Name'].tolist()
     word=search
-    simlist=difflib.get_close_matches(word, namelist)
+    # simlist=difflib.get_close_matches(word, namelist)
+    simlist = process.extract(word, namelist, limit=5)
+
     try: 
         findf=give_rec(simlist[0])
         findf=findf.reset_index(drop=True)
